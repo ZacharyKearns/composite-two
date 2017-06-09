@@ -1,0 +1,256 @@
+@import url('https://fonts.googleapis.com/css?family=Oxygen:300|Raleway:600');
+
+/* CSS Reset */
+a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section,main{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
+/* End Of Reset */
+
+/**
+ * General Styles
+ */
+
+body {
+   font-family: Oxygen, Arial, Helvetica, sans-serif;
+   font-weight: 300;
+   background: #f2f3f5;
+}
+
+a {
+   text-decoration: none;
+}
+
+#filler {
+   display: none;
+}
+
+/**
+ * Header
+ */
+
+#header {
+   background: #000;
+   overflow: hidden;
+}
+
+#fake-header {
+   display: none;
+}
+
+#logo {
+   display: block;
+   float: left;
+   height: 50px;
+   padding: 20px 0;
+   margin-left: 30px;
+}
+
+#menu-button, #close-menu {
+   float: right;
+   margin-right: 30px;
+}
+
+#menu-button {
+   height: 26px;
+   padding-top: 32px;
+}
+
+#close-menu {
+   height: 20px;
+   padding-top: 35px;
+   display: none;
+}
+
+#menu {
+   clear: both;
+   display: none;
+}
+
+.menu-item {
+   display: block;
+   height: 50px;
+   line-height: 50px;
+   color: #c2c2c2;
+   background: #333;
+   border-bottom: 2px solid #FFF;
+   padding-left: 20px;
+}
+
+/**
+ * Social Icons
+ */
+
+.social-icons {
+   text-align: center;
+   padding-top: 30px;
+   display: none;
+}
+
+.follow-us {
+   color: #FFF;
+   padding-bottom: 12px;
+}
+
+.social-icons img {
+   width: 30px;
+   margin: 0 5px;
+}
+
+/**
+ * Users
+ */
+
+ #user-list {
+    max-width: 940px;
+    padding: 0 10px;
+    margin: 0 auto;
+
+}
+
+#users-heading {
+   text-align: center;
+   font-size: 40px;
+   padding: 20px 0;
+   border-bottom: 1px solid #ddd;
+   color: #333;
+   font-family: Raleway, Arial, Helvetica, sans-serif;
+}
+
+.user {
+   padding: 20px 0;
+   border-bottom: 1px solid #ddd;
+   clear: both;
+   overflow: hidden;
+   line-height: 1.6;
+}
+
+.user-image {
+   width: 80px;
+   border-radius: 50%;
+   float: left;
+   margin: 0 15px;
+}
+
+.user-info {
+   overflow: hidden;
+}
+
+.name a {
+   color: #222;
+   font-size: 24px;
+   text-decoration: underline;
+}
+
+.name a:hover {
+   color: #666;
+}
+
+.location {
+   color: #666;
+}
+
+.about {
+   color: #999;
+}
+
+.email {
+   padding-top: 3px;
+}
+
+.email img {
+   height: 30px;
+   vertical-align: middle;
+   margin-right: 3px;
+}
+
+.email a {
+   color: #444;
+   text-decoration: underline;
+}
+
+/**
+ * Temp Forms
+ */
+
+input, textarea, label, select {
+   display: block;
+}
+
+.error {
+   color: red;
+}
+
+/**
+ * Media Query > 640px
+ */
+@media screen and (min-width: 640px) {
+   body {
+      padding-top: 0;
+      height: 100%;
+   }
+
+   #header {
+      height: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      overflow-y: auto;
+   }
+
+   /* make menu and fake header element same width
+   to stop content from spanning the entire viewport */
+   #header, #fake-header {
+      width: 220px;
+   }
+
+   #filler, #fake-header {
+      display: block;
+   }
+
+   #logo {
+      width: 60%;
+      margin: 0 auto;
+      padding: 40px 0;
+      float: none;
+   }
+
+   #fake-header {
+      height: 100px;
+      float: left;
+   }
+
+   #menu {
+      padding: 20px 0;
+      text-align: center;
+      border: 1px solid #161616;
+      border-width: 1px 0;
+      font-size: 14px;
+      /* override jquery toggle method */
+      display: block !important;
+   }
+
+   #menu-button, #close-menu {
+      display: none !important;
+   }
+
+   .menu-item {
+      padding: 0 10px;
+      height: 40px;
+      line-height: 40px;
+      color: #c2c2c2;
+      background: #000;
+      border-bottom: none;
+   }
+
+   #main, #footer {
+      overflow: hidden;
+   }
+
+   .social-icons {
+      display: block;
+   }
+}
+
+/***********
+************
+** GAGAN'S CODE
+************
+************/
