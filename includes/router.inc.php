@@ -5,27 +5,56 @@ switch($_GET['action']) {
    break;
    case 'editphotos':
       check_login();
+      if (isset($_GET['email'])) {
+         // Check if book belongs to user
+         check_user_email($db, $_GET['email']);
+         $result = get_user($db, $_SESSION['user_id']);
+      }
       $template = 'edit-photos.tpl.php';
    break;
    case 'editprofile':
-      if (isset($_SESSION['activate_account'])) {
-         $template = 'edit-profile.tpl.php';
-      } else {
-         check_login();
-         $template = 'edit-profile.tpl.php';
+      check_login();
+      if (isset($_POST['submitted'])) {
+         // Check if email belongs to user
+         check_user_email($db, $_POST['email']);
+         $errors = update_user_image(
+            $db,
+            $_POST['email'],
+            $_POST['old-image']
+         );
+      } else if (isset($_POST['firstname'])) {
+         // Check if email belongs to user
+         check_user_email($db, $_POST['email']);
+         $errors = update_user(
+            $db,
+            $_POST['email'],
+            $_POST['firstname'],
+            $_POST['lastname'],
+            $_POST['about'],
+            $_POST['locality'],
+            $_POST['state'],
+            $_POST['country']
+         );
+         $result = get_user($db, $_SESSION['user_id']);
       }
+      if (isset($_GET['email'])) {
+         // Check if book belongs to user
+         check_user_email($db, $_GET['email']);
+         $result = get_user($db, $_SESSION['user_id']);
+      }
+      $template = 'edit-profile.tpl.php';
    break;
    case 'login':
       // Hide page if user is logged in
       check_logout();
-      $template = 'login.tpl.php';
-      if ( isset($_POST['email'])) {
+      if (isset($_POST['email'])) {
          $errors = log_in(
             $db,
             $_POST['email'],
             $_POST['password']
          );
       }
+      $template = 'login.tpl.php';
    break;
    case 'logout':
       logout();
@@ -49,13 +78,17 @@ switch($_GET['action']) {
       $template = 'emailsent.tpl.php';
    break;
    case 'verify':
-      // Hide page if user is logged in
-      check_logout();
       if (isset($_GET['hash'])) {
-         verify_account($db, $_GET['hash']);
+         $verified = verify_account($db, $_GET['hash']);
+         if ($verified) {
+            $template = 'verify.tpl.php';
+         } else {
+            redirect('/');
+         }
       } else {
-         redirect('/lalala');
+         redirect('/');
       }
+   break;
    case 'about':
       $template = 'about.tpl.php';
    break;

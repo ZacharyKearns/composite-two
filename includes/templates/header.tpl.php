@@ -33,10 +33,10 @@
             </li>
             <?php if (user_is_logged_in()): ?>
                <li>
-                  <a class="menu-item" href="/editphotos">EDIT PHOTOS</a>
+                  <a class="menu-item" href="/editphotos?email=<?php echo $_SESSION['email']; ?>">EDIT PHOTOS</a>
                </li>
                <li>
-                  <a class="menu-item" href="/editprofile">EDIT PROFILE</a>
+                  <a class="menu-item" href="/editprofile?email=<?php echo $_SESSION['email']; ?>">EDIT PROFILE</a>
                </li>
                <li>
                   <a class="menu-item" href="/logout">LOGOUT</a>

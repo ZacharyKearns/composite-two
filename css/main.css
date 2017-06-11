@@ -170,12 +170,29 @@ a {
  * Temp Forms
  */
 
-input, textarea, label, select {
+h1 {
+   font-size: 60px;
+   text-align: center;
+}
+
+form {
+   width: 500px;
+   margin: 0 auto;
+}
+
+input, textarea, label, select, .error, p, button {
    display: block;
+   margin-bottom: 10px;
 }
 
 .error {
    color: red;
+}
+
+.profile-image {
+   width: 100px;
+   margin: 200px auto 0 auto;
+   display: block;
 }
 
 /**
