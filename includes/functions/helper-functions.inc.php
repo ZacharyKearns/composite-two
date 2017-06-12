@@ -30,3 +30,9 @@ function check_user_email($db, $email) {
 
    return false;
 }
+
+function printVar($var) {
+   echo '<pre>';
+   echo print_r($var);
+   echo '</pre>';
+}

@@ -10,7 +10,7 @@
       <img class="user-image" src="images/user-images/large/<?php echo $row['user_image']; ?>" alt="<?php echo $name; ?>">
       <div class="user-info">
          <p class="name">
-            <a href="#">
+            <a href="/user?email=<?php echo $row['email']; ?>">
                <?php echo $name; ?>
             </a>
          </p>
