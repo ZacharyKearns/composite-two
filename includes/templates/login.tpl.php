@@ -3,7 +3,7 @@
    include('includes/templates/header.tpl.php');
 ?>
 <h1><?php echo $page_title; ?></h1>
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>?action=login" method="post">
+<form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post">
    <?php echo $errors['email']; ?>
    <label class="label">Email:</label>
    <input class="text-input" type="text" name="email" size="80" maxlength="140"

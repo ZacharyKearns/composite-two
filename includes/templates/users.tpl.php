@@ -7,7 +7,7 @@
    <?php while($row = mysqli_fetch_assoc($result)):
    $name = $row['firstname'] . ' ' . $row['lastname']; ?>
    <div class="user" id="user-<?php echo $row['id']; ?>">
-      <img class="user-image" src="images/user-images/large/<?php echo $row['user_image']; ?>" alt="<?php echo $name; ?>">
+      <img class="user-image user-image-medium" src="images/user-images/medium/<?php echo $row['user_image']; ?>" alt="<?php echo $name; ?>">
       <div class="user-info">
          <p class="name">
             <a href="/user?email=<?php echo $row['email']; ?>">

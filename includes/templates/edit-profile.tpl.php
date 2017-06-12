@@ -14,8 +14,8 @@ include('includes/templates/header.tpl.php'); ?>
          if (!$row['active']) { echo $message; }
       ?>
    </p>
-   <img class="profile-image" src="images/user-images/large/<?php echo $row['user_image']; ?>" alt="user image">
-   <form action="<?php echo $_SERVER['PHP_SELF']; ?>?action=editprofile" method="post" enctype="multipart/form-data">
+   <img class="profile-image" src="images/user-images/medium/<?php echo $row['user_image']; ?>" alt="user image">
+   <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" enctype="multipart/form-data">
       <!-- hidden input to detect form submission -->
       <input type="hidden" name="submitted">
       <input type="hidden" name="email" value="<?php echo $row['email']; ?>" />
@@ -29,7 +29,7 @@ include('includes/templates/header.tpl.php'); ?>
       <input type="file" name="user-image">
       <input type="submit" value="Upload">
    </form>
-   <form action="<?php echo $_SERVER['PHP_SELF'] ?>?action=editprofile" method="post">
+   <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post">
       <?php echo $errors['email']; ?>
       <input type="hidden" name="email" value="<?php echo $row['email']; ?>" />
       <input id="locality" type="hidden" name="locality" value="<?php echo $row['locality']; ?>" />

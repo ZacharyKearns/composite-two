@@ -35,12 +35,12 @@ switch($_GET['action']) {
             $_POST['state'],
             $_POST['country']
          );
-         $result = get_user($db, $_SESSION['user_id']);
+         $result = get_user($db, $_SESSION['email']);
       }
       if (isset($_GET['email'])) {
          // Check if book belongs to user
          check_user_email($db, $_GET['email']);
-         $result = get_user($db, $_SESSION['user_id']);
+         $result = get_user($db, $_GET['email']);
       }
       $template = 'edit-profile.tpl.php';
    break;
@@ -88,6 +88,16 @@ switch($_GET['action']) {
       } else {
          redirect('/');
       }
+   break;
+   case 'gallery':
+      if (isset($_GET['id']) && isset($_GET['email'])) {
+         $user = get_user($db, $_GET['email']);
+         $gallery = get_gallery($db, $_GET['email']);
+         $images = get_images($db, $_GET['id']);
+      } else {
+         redirect('/');
+      }
+      $template = 'gallery.tpl.php';
    break;
    case 'about':
       $template = 'about.tpl.php';

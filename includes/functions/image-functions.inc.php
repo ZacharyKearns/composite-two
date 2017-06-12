@@ -152,6 +152,12 @@ function update_user_image($db, $email, $old_image) {
             resize_image(
                $final_location,
                USER_IMAGE_FOLDER_LARGE,
+               320
+            );
+
+            resize_image(
+               $final_location,
+               USER_IMAGE_FOLDER_MEDIUM,
                160
             );
 
@@ -181,6 +187,7 @@ function update_user_image($db, $email, $old_image) {
                unlink(USER_IMAGE_FOLDER . $filename);
                if ($old_image != 'empty.png') {
                   unlink(USER_IMAGE_FOLDER_LARGE . $old_image);
+                  unlink(USER_IMAGE_FOLDER_MEDIUM . $old_image);
                   unlink(USER_IMAGE_FOLDER_SMALL . $old_image);
                }
                redirect("/editprofile?email=$email");
@@ -197,4 +204,19 @@ function update_user_image($db, $email, $old_image) {
                             Please select an image to upload.
                          </p>';
    }
+}
+
+function get_images($db, $id) {
+   // set up query to fetch galleries
+   $query = "SELECT
+                name,
+                filename
+             FROM photopro_images
+             WHERE gallery_id = $id
+             ORDER BY created_at ASC";
+
+   // send query to the db server and wait for result
+   $result = mysqli_query($db, $query) or die(mysqli_error($db));
+
+   return $result;
 }

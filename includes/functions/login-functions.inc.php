@@ -52,7 +52,7 @@ function log_in($db, $email, $password) {
             $_SESSION['firstname'] = $row['firstname'];
             $_SESSION['email'] = $row['email'];
             $_SESSION['user_image'] = $row['user_image'];
-            redirect("/editphotos?email=$email");
+            redirect("/user?email=$email");
          } else {
             $errors['password'] = '<p class="error">Incorrect password.</p>';
          }
