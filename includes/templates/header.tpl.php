@@ -33,7 +33,10 @@
             </li>
             <?php if (user_is_logged_in()): ?>
                <li>
-                  <a class="menu-item" href="/editphotos?email=<?php echo $_SESSION['email']; ?>">EDIT PHOTOS</a>
+                  <a class="menu-item menu-name" href="/editphotos?email=<?php echo $_SESSION['email']; ?>">
+                     <img class="menu-img" src="images/user-images/small/<?php echo $_SESSION['user_image']; ?>" alt="user image">
+                     <?php echo strtoupper($_SESSION['firstname']); ?>
+                  </a>
                </li>
                <li>
                   <a class="menu-item" href="/editprofile?email=<?php echo $_SESSION['email']; ?>">EDIT PROFILE</a>

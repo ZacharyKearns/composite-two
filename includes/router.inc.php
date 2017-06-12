@@ -3,14 +3,14 @@ switch($_GET['action']) {
    case 'home':
       $result = get_users($db);
    break;
-   case 'editphotos':
-      check_login();
+   case 'user':
       if (isset($_GET['email'])) {
-         // Check if book belongs to user
-         check_user_email($db, $_GET['email']);
-         $result = get_user($db, $_SESSION['user_id']);
+         $user = get_user($db, $_GET['email']);
+         $galleries = get_galleries($db, $_GET['email']);
+      } else {
+         redirect('/');
       }
-      $template = 'edit-photos.tpl.php';
+      $template = 'user.tpl.php';
    break;
    case 'editprofile':
       check_login();

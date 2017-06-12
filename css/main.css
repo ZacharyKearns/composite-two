@@ -74,6 +74,12 @@ a {
    padding-left: 20px;
 }
 
+.menu-img {
+   width: 40px;
+   vertical-align: middle;
+   margin-right: 5px;
+}
+
 /**
  * Social Icons
  */

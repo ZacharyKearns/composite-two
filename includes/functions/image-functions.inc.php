@@ -1,10 +1,5 @@
 <?php
-function resize_profile_image(
-   $image_filepath,
-   $destination_folder,
-   $dimensions,
-   $quality
-) {
+function resize_image($image_filepath, $destination_folder, $dimensions) {
    $info = getimagesize($image_filepath);
    // get the type of image it is
    $type = $info['mime'];
@@ -86,16 +81,14 @@ function resize_profile_image(
    // write the resized image to the destination folder
    switch($type) {
       case 'image/png':
-         // convert 0 to 10 -> 9 to 0
-         $png_quality  = 9 - (($quality / 10) * 9);
-         imagepng($resized_image, $resized_filepath, $png_quality);
+         imagepng($resized_image, $resized_filepath, 6);
       break;
       case 'image/gif':
          imagegif($resized_image, $resized_filepath);
       break;
       case 'image/jpeg':
       case 'image/pjpeg':
-         imagejpeg($resized_image, $resized_filepath, $quality * 10);
+         imagejpeg($resized_image, $resized_filepath, 80);
       break;
       default:
          return false;
@@ -109,6 +102,8 @@ function resize_profile_image(
    return $image_filepath;
 }
 
+
+
 function update_user_image($db, $email, $old_image) {
    // check if there is a filename submitted
    if (strlen($_FILES['user-image']['name']) > 0) {
@@ -116,11 +111,11 @@ function update_user_image($db, $email, $old_image) {
       $temp_location = $_FILES['user-image']['tmp_name'];
 
       if (
-         $_FILES['user-image']['size'] > MAX_FILE_SIZE ||
+         $_FILES['user-image']['size'] > MAX_USER_IMAGE_FILE_SIZE ||
          $_FILES['user-image']['error'] == UPLOAD_ERR_INI_SIZE
       ) {
          // file is too big
-         $maxSize = round(MAX_FILE_SIZE / 1024);
+         $maxSize = round(MAX_USER_IMAGE_FILE_SIZE / 1024);
          $errors['size'] = "<p class=\"error\">
                                The file uploaded is too large,
                                please upload an image smaller
@@ -154,12 +149,17 @@ function update_user_image($db, $email, $old_image) {
          if (move_uploaded_file($temp_location, $final_location)) {
             // file was moved OK
 
-            // resize_to_fit(
-            //    $final_location,
-            //    $config->smallFolder,
-            //    $config->imageSize->small,
-            //    $config->imageQuality
-            // );
+            resize_image(
+               $final_location,
+               USER_IMAGE_FOLDER_LARGE,
+               160
+            );
+
+            resize_image(
+               $final_location,
+               USER_IMAGE_FOLDER_SMALL,
+               40
+            );
 
             // insert into the database
 
@@ -177,8 +177,11 @@ function update_user_image($db, $email, $old_image) {
             $result = mysqli_query($db, $query) or die(mysqli_error($db));
 
             if ($result == true) {
+               $_SESSION['user_image'] = $filename;
+               unlink(USER_IMAGE_FOLDER . $filename);
                if ($old_image != 'empty.png') {
-                  unlink(USER_IMAGE_FOLDER . $old_image);
+                  unlink(USER_IMAGE_FOLDER_LARGE . $old_image);
+                  unlink(USER_IMAGE_FOLDER_SMALL . $old_image);
                }
                redirect("/editprofile?email=$email");
             }

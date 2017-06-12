@@ -21,7 +21,7 @@ function get_users($db) {
    return $result;
 }
 
-function get_user($db, $user_id) {
+function get_user($db, $email) {
    // set up query to fetch book list
    $query = "SELECT
                 email,
@@ -35,7 +35,7 @@ function get_user($db, $user_id) {
                 state,
                 country
              FROM photopro_users
-             WHERE id = $user_id
+             WHERE email = '$email'
              LIMIT 1";
 
    // send query to the db server and wait for result
@@ -114,6 +114,7 @@ function update_user(
       $result = mysqli_query($db, $query) or die(mysqli_error($db));
 
       if ($result == true) {
+         $_SESSION['firstname'] = $firstname;
          redirect("/editprofile?email=$email");
       }
    }
