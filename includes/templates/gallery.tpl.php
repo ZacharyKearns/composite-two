@@ -9,6 +9,9 @@
    }
 
    $user_row = mysqli_fetch_assoc($user);
+   if (!$user_row['active']) {
+      redirect('/');
+   }
    $gallery_row = mysqli_fetch_assoc($gallery);
    $email = $user_row['email'];
    include('includes/templates/header.tpl.php');

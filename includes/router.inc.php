@@ -44,6 +44,16 @@ switch($_GET['action']) {
       }
       $template = 'edit-profile.tpl.php';
    break;
+   case 'editgalleries':
+      if(isset($_GET['email'])) {
+         // Check if book belongs to user
+         check_user_email($db, $_GET['email']);
+         $user = get_user($db, $_GET['email']);
+         $galleries = get_galleries($db, $_GET['email']);
+         $edit_table_arr = get_edit_table_arr($db, $galleries);
+      }
+      $template = 'edit-galleries.tpl.php';
+   break;
    case 'login':
       // Hide page if user is logged in
       check_logout();

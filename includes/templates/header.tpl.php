@@ -42,6 +42,9 @@
                   <a class="menu-item" href="/editprofile?email=<?php echo $_SESSION['email']; ?>">EDIT PROFILE</a>
                </li>
                <li>
+                  <a class="menu-item" href="/editgalleries?email=<?php echo $_SESSION['email']; ?>">EDIT GALLERIES</a>
+               </li>
+               <li>
                   <a class="menu-item" href="/logout">LOGOUT</a>
                </li>
             <?php else: ?>

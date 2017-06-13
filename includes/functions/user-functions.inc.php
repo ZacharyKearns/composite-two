@@ -115,6 +115,10 @@ function update_user(
 
       if ($result == true) {
          $_SESSION['firstname'] = $firstname;
+         $large_folder_path = "images/user-galleries/$email/large/";
+         $thumb_folder_path = "images/user-galleries/$email/thumb/";
+         mkdir($large_folder_path, 0777, true);
+         mkdir($thumb_folder_path, 0777, true);
          redirect("/editprofile?email=$email");
       }
    }

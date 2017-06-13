@@ -1,12 +1,15 @@
 <?php
    $page_title = 'User';
-   include('includes/templates/header.tpl.php');
    // If user exists in database set its
    // values to the row variable
    if (mysqli_num_rows($user) > 0):
    $row = mysqli_fetch_assoc($user);
+   if (!$row['active']) {
+      redirect('/');
+   }
    $name = $row['firstname'] . ' ' . $row['lastname'];
    $email = $row['email'];
+   include('includes/templates/header.tpl.php');
 ?>
 <p class="error">
    <?php

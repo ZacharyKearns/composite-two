@@ -36,3 +36,23 @@ function printVar($var) {
    echo print_r($var);
    echo '</pre>';
 }
+
+function get_edit_table_arr($db, $galleries) {
+   $galleries = mysqli_fetch_all($galleries, MYSQLI_ASSOC);
+   $galleries_with_images = array();
+
+   foreach($galleries as $gallery) {
+      $images = get_images($db, $gallery['id']);
+      $images = mysqli_fetch_all($images, MYSQLI_ASSOC);
+      $gallery_with_images = array(
+         'id' => $gallery['id'],
+         'name' => $gallery['name'],
+         'description' => $gallery['description'],
+         'featured_image' => $gallery['featured_image'],
+         'user_email' => $gallery['user_email'],
+         'images' => $images
+      );
+      array_push($galleries_with_images, $gallery_with_images);
+   }
+   return $galleries_with_images;
+}
