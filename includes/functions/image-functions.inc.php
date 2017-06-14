@@ -105,6 +105,7 @@ function resize_image($image_filepath, $destination_folder, $dimensions) {
 
 
 function update_user_image($db, $email, $old_image) {
+   $errors = array();
    // check if there is a filename submitted
    if (strlen($_FILES['user-image']['name']) > 0) {
 
@@ -204,11 +205,125 @@ function update_user_image($db, $email, $old_image) {
                             Please select an image to upload.
                          </p>';
    }
+   return $errors;
+}
+
+// END UPDATE USER IMAGE
+
+// ADD GALLERY IMAGE
+
+function add_gallery_image($db, $gallery_id, $image_name) {
+   $errors = array();
+
+   if (strlen(trim($image_name)) < 1) {
+      $errors['image_name'] = '<p class="error">
+                                  Please enter an image name.
+                               </p>';
+   }
+
+   if (intval($gallery_id) < 1) {
+      $errors['add_image_gallery_id'] = '<p class="error">
+                                             Gallery Id is not valid.
+                                          </p>';
+   }
+
+   $user_email = sanitize($db, $_POST['email']);
+   $user_folder = USER_GALLERIES_FOLDER . "$user_email/";
+   $image_name = sanitize($db, $image_name);
+
+   // check if there is a filename submitted
+   if (strlen($_FILES['gallery-image']['name']) > 0) {
+
+      $temp_location = $_FILES['gallery-image']['tmp_name'];
+
+      if (
+         $_FILES['gallery-image']['size'] > MAX_FILE_SIZE ||
+         $_FILES['gallery-image']['error'] == UPLOAD_ERR_INI_SIZE
+      ) {
+         // file is too big
+         $maxSize = round(MAX_FILE_SIZE / 1024);
+         $errors['size'] = "<p class=\"error\">
+                               The file uploaded is too large,
+                               please upload an image smaller
+                               than $maxSize KB.
+                            </p>";
+      }
+
+      $info = getimagesize($temp_location);
+      if (!$info || strpos(ALLOWED_FILE_TYPES, $info['mime']) === false) {
+         // file is either corrupted or not the correct type of file
+         $errors['type'] = '<p class="error">
+                               The file is either corrupted or not one of the
+                               allowed types (JPEG, GIF, or PNG)
+                            </p>';
+      }
+
+      if (count($errors) == 0) {
+         if (RANDOMIZE_FILENAME) {
+            // unique hash for the filename
+            $hash = sha1(microtime());
+            // get the original extension
+            $extension = explode('.', $_FILES['gallery-image']['name']);
+            $extension = array_pop($extension);
+            // combine it all together
+            $final_location = "{$user_folder}{$hash}.{$extension}";
+         } else {
+            $final_location = $user_folder . $_FILES['gallery-image']['name'];
+         }
+
+
+         if (move_uploaded_file($temp_location, $final_location)) {
+            // file was moved OK
+
+            $user_folder_large = $user_folder . "large/";
+            $user_folder_thumb = $user_folder . "thumb/";
+
+            resize_image(
+               $final_location,
+               $user_folder_large,
+               600
+            );
+
+            resize_image(
+               $final_location,
+               $user_folder_thumb,
+               100
+            );
+
+            // insert into the database
+
+            // get the filename on its own
+            $filename = explode('/', $final_location);
+            $filename = array_pop($filename);
+
+            $query = "INSERT INTO photopro_images(name, filename, gallery_id)
+                      VALUES('$image_name', '$filename', $gallery_id)";
+
+            $result = mysqli_query($db, $query) or die(mysqli_error($db));
+
+            if ($result == true) {
+               unlink($user_folder . $filename);
+               redirect("/editgallery?id=$gallery_id");
+            }
+         } else {
+            // could not move file
+            $errors['file'] = '<p class="error">
+                                  Upload failed. Please try again.
+                               </p>';
+         }
+      }
+   } else {
+      $errors['file'] = '<p class="error">
+                            Please select an image to upload.
+                         </p>';
+   }
+   return $errors;
 }
 
 function get_images($db, $id) {
    // set up query to fetch galleries
    $query = "SELECT
+                id,
                 name,
                 filename
              FROM photopro_images
@@ -219,4 +334,30 @@ function get_images($db, $id) {
    $result = mysqli_query($db, $query) or die(mysqli_error($db));
 
    return $result;
+}
+
+function update_image_name($db, $image_id, $image_name, $gallery_id) {
+   $errors = array();
+
+   if (strlen(trim($image_name)) < 1) {
+      $errors['updated_image_name'] = '<p class="error">
+                                          Image name cannot be empty.
+                                       </p>';
+   }
+
+   if (count($errors) == 0) {
+      $image_id = sanitize($db, $image_id);
+      $image_name = sanitize($db, $image_name);
+
+      $query = "UPDATE photopro_images
+                SET name = '$image_name'
+                WHERE id = $image_id";
+
+      $result = mysqli_query($db, $query) or die(mysqli_error($db));
+
+      if ($result == true) {
+         redirect("/editgallery?id=$gallery_id");
+      }
+   }
+   return $errors;
 }

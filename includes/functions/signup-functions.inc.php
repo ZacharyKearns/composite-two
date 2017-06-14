@@ -33,7 +33,7 @@ function sign_up($db, $email, $password, $confirm_password) {
          $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
          $query = "INSERT INTO photopro_users(email, email_hash, password_hash)
-                  VALUES('$email', '$email_hash', '$password_hash')";
+                   VALUES('$email', '$email_hash', '$password_hash')";
 
          // send query to the db server and wait for result
          $result = mysqli_query($db, $query) or die(mysqli_error($db));

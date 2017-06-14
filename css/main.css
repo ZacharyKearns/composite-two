@@ -302,6 +302,11 @@ a {
    color: #FFF;
 }
 
+.delete-gallery-btn {
+   background-color: #b5202c;
+   margin: 40px 0;
+}
+
 .edit-gallery-p {
    font-size: 18px;
    padding-bottom: 5px;
@@ -319,6 +324,7 @@ a {
    max-width: 800px;
    text-align: center;
    font-size: 18px;
+   margin-bottom: 15px;
 }
 
 .edit-table th,
@@ -333,8 +339,22 @@ a {
 }
 
 .edit-thumbnail {
-   width: 60px;
-   vertical-align: middle;
+   width: 90px;
+   vertical-align: top;
+}
+
+.update-name-form {
+   width: auto;
+}
+
+.update-name-form input,
+.update-name-form label {
+   margin-bottom: 5px;
+}
+
+.update-name-btn {
+   padding: 5px 10px;
+   margin-bottom: 0;
 }
 
 /**
@@ -362,7 +382,7 @@ input, textarea, label, select, .error, p, button {
 
 .profile-image {
    width: 100px;
-   margin: 200px auto 0 auto;
+   margin: 50px auto 0 auto;
    display: block;
 }
 

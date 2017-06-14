@@ -4,6 +4,7 @@ switch($_GET['action']) {
       $result = get_users($db);
    break;
    case 'user':
+      check_login();
       if (isset($_GET['email'])) {
          $user = get_user($db, $_GET['email']);
          $galleries = get_galleries($db, $_GET['email']);
@@ -41,18 +42,71 @@ switch($_GET['action']) {
          // Check if book belongs to user
          check_user_email($db, $_GET['email']);
          $result = get_user($db, $_GET['email']);
+      } else {
+         redirect('/');
       }
       $template = 'edit-profile.tpl.php';
    break;
    case 'editgalleries':
+      check_login();
       if(isset($_GET['email'])) {
          // Check if book belongs to user
          check_user_email($db, $_GET['email']);
          $user = get_user($db, $_GET['email']);
          $galleries = get_galleries($db, $_GET['email']);
-         $edit_table_arr = get_edit_table_arr($db, $galleries);
+      } else {
+         redirect('/');
       }
       $template = 'edit-galleries.tpl.php';
+   break;
+   case 'editgallery':
+      check_login();
+      if (isset($_POST['submitted'])) {
+         check_user_gallery($db, $_POST['gallery_id']);
+         $errors = add_gallery_image(
+            $db,
+            $_POST['gallery_id'],
+            $_POST['image_name']
+         );
+      } else if (isset($_POST['updated_image_name'])) {
+         check_user_gallery($db, $_POST['gallery_id']);
+         $errors = update_image_name(
+            $db,
+            $_POST['image_id'],
+            $_POST['updated_image_name'],
+            $_POST['gallery_id']
+         );
+      } else if (isset($_POST['name'])) {
+         check_user_gallery($db, $_POST['id']);
+         $errors = update_gallery(
+            $db,
+            $_POST['id'],
+            $_POST['name'],
+            $_POST['description']
+         );
+      }
+      if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+         check_user_gallery($db, $_GET['id']);
+         $temp_gallery = get_gallery($db, $_GET['id']);
+         $gallery = get_gallery_with_images($db, $temp_gallery);
+      } else {
+         redirect('/');
+      }
+      $template = 'edit-gallery.tpl.php';
+   break;
+   case 'setfeatured':
+      check_login();
+      if (isset($_GET['featured']) && isset($_GET['id']) && is_numeric($_GET['id'])) {
+         //check_user_gallery($db, $_GET['id']);
+         //check_gallery_image($db, $_GET['featured'], $_GET['id']);
+         set_featured_image(
+            $db,
+            $_GET['featured'],
+            $_GET['id']
+         );
+      } else {
+         redirect('/');
+      }
    break;
    case 'login':
       // Hide page if user is logged in
@@ -100,9 +154,9 @@ switch($_GET['action']) {
       }
    break;
    case 'gallery':
-      if (isset($_GET['id']) && isset($_GET['email'])) {
+      if (isset($_GET['id']) && is_numeric($_GET['id']) && isset($_GET['email'])) {
          $user = get_user($db, $_GET['email']);
-         $gallery = get_gallery($db, $_GET['email']);
+         $gallery = get_gallery($db, $_GET['id']);
          $images = get_images($db, $_GET['id']);
       } else {
          redirect('/');
