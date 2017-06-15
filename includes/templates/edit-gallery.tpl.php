@@ -46,11 +46,12 @@
                   <?php if ($image['filename'] == $gallery['featured_image']): ?>
                      <span>Current</span>
                   <?php else:
-                     $set_featured = "/setfeatured?featured={$image['filename']}&id={$gallery['id']}"; ?>
-                     <a href=<?php echo $set_featured; ?>>Set</a>
+                     $set_featured_link = "/setfeatured?featured={$image['filename']}&id={$gallery['id']}"; ?>
+                     <a href=<?php echo $set_featured_link; ?>>Set</a>
                   <?php endif ?>
                </td>
-               <td><a href="#">Delete</a></td>
+               <?php $delete_link = "/delete-image?filename={$image['filename']}&id={$gallery['id']}"; ?>
+               <td><a href=<?php echo $delete_link; ?>>Delete</a></td>
             </tr>
          <?php endforeach ?>
       </tbody>

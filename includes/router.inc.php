@@ -49,6 +49,16 @@ switch($_GET['action']) {
    break;
    case 'editgalleries':
       check_login();
+      if (isset($_POST['submitted'])) {
+         $errors = add_gallery(
+            $db,
+            $_POST['gallery_name'],
+            $_POST['description'],
+            $_POST['featured_image']
+         );
+
+      }
+
       if(isset($_GET['email'])) {
          // Check if book belongs to user
          check_user_email($db, $_GET['email']);
@@ -97,11 +107,25 @@ switch($_GET['action']) {
    case 'setfeatured':
       check_login();
       if (isset($_GET['featured']) && isset($_GET['id']) && is_numeric($_GET['id'])) {
-         //check_user_gallery($db, $_GET['id']);
-         //check_gallery_image($db, $_GET['featured'], $_GET['id']);
+         check_user_gallery($db, $_GET['id']);
+         check_gallery_image($db, $_GET['featured'], $_GET['id']);
          set_featured_image(
             $db,
             $_GET['featured'],
+            $_GET['id']
+         );
+      } else {
+         redirect('/');
+      }
+   break;
+   case 'delete-image':
+      check_login();
+      if (isset($_GET['filename']) && isset($_GET['id']) && is_numeric($_GET['id'])) {
+         check_user_gallery($db, $_GET['id']);
+         check_gallery_image($db, $_GET['filename'], $_GET['id']);
+         delete_image(
+            $db,
+            $_GET['filename'],
             $_GET['id']
          );
       } else {

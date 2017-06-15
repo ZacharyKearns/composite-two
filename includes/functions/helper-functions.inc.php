@@ -11,7 +11,7 @@ function redirect($url) {
    die("Redirect to <a href=\"$url\">$url</a> failed.");
 }
 
-function printVar($var) {
+function print_var($var) {
    echo '<pre>';
    echo print_r($var);
    echo '</pre>';

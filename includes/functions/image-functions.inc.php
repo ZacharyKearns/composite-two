@@ -223,8 +223,8 @@ function add_gallery_image($db, $gallery_id, $image_name) {
 
    if (intval($gallery_id) < 1) {
       $errors['add_image_gallery_id'] = '<p class="error">
-                                             Gallery Id is not valid.
-                                          </p>';
+                                            Gallery Id is not valid.
+                                         </p>';
    }
 
    $user_email = sanitize($db, $_POST['email']);
@@ -360,4 +360,21 @@ function update_image_name($db, $image_id, $image_name, $gallery_id) {
       }
    }
    return $errors;
+}
+
+function delete_image($db, $filename, $gallery_id) {
+   $filename = sanitize($db, $filename);
+
+   $query = "DELETE FROM photopro_images WHERE filename = '$filename' LIMIT 1";
+
+   // send query to the db server and wait for result
+   $result = mysqli_query($db, $query) or die(mysqli_error($db));
+
+   if ($result == true) {
+      unlink(USER_GALLERIES_FOLDER . $_SESSION['email'] . "/large/$filename");
+      unlink(USER_GALLERIES_FOLDER . $_SESSION['email'] . "/thumb/$filename");
+      redirect("/editgallery?id=$gallery_id");
+   } else {
+      redirect('/');
+   }
 }

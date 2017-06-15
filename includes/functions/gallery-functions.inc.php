@@ -34,6 +34,77 @@ function get_gallery($db, $id) {
    return $result;
 }
 
+function add_gallery(
+   $db,
+   $gallery_name,
+   $description,
+   $featured_image
+) {
+   $errors = array();
+   $gallery_name = sanitize($db, $gallery_name);
+   $description = sanitize($db, $description);
+   $featured_image = sanitize($db, $featured_image);
+
+   if (strlen(trim($gallery_name)) < 1) {
+      $errors['gallery_name'] = '<p class="error">
+                                    Please enter a gallery name.
+                                 </p>';
+   }
+
+   if (strlen(trim($description)) < 1) {
+      $errors['description'] = '<p class="error">
+                                 Please enter a description.
+                              </p>';
+   }
+
+   if (strlen(trim($featured_image)) < 1) {
+      $errors['featured_image'] = '<p class="error">
+                                      Please enter an image name.
+                                   </p>';
+   }
+
+   if (count($errors) == 0) {
+      $email = $_SESSION['email'];
+
+      $query = "INSERT INTO photopro_galleries(
+                   name,
+                   description,
+                   featured_image,
+                   user_email
+                )
+                VALUES(
+                   '$gallery_name',
+                   '$description',
+                   '$featured_image',
+                   '$email'
+                )";
+
+      // send query to the db server and wait for result
+      $result = mysqli_query($db, $query) or die(mysqli_error($db));
+
+      if ($result == true) {
+         $galleries = get_galleries($db, $_SESSION['email']);
+         $galleries = mysqli_fetch_all($galleries, MYSQLI_ASSOC);
+         $index = count($galleries) - 1;
+         $gallery = $galleries[$index];
+
+         $errors['image_upload'] = add_gallery_image(
+            $db,
+            $gallery['id'],
+            $gallery['featured_image']
+         );
+
+         if (count($errors) == 0) {
+            redirect("/editgalleries?email={$gallery['user_email']}");
+         } else {
+            return $errors;
+         }
+      }
+   }
+
+   return $errors;
+}
+
 function check_user_gallery($db, $id) {
 
    if (intval($id) < 1) {
@@ -100,9 +171,9 @@ function update_gallery($db, $id, $name, $description) {
    return $errors;
 }
 
-function check_gallery_image($db, $image_name, $gallery_id) {
+function check_gallery_image($db, $filename, $gallery_id) {
 
-   if (intval($gallery_id) < 1 || strlen(trim($image_name)) < 1) {
+   if (intval($gallery_id) < 1 || strlen(trim($filename)) < 1) {
       redirect('/');
    }
 
@@ -110,7 +181,7 @@ function check_gallery_image($db, $image_name, $gallery_id) {
    $query = "SELECT
                gallery_id
              FROM photopro_images
-             WHERE name = '$image_name'
+             WHERE filename = '$filename'
              LIMIT 1";
 
    // send query to the db server and wait for result
@@ -138,5 +209,7 @@ function set_featured_image($db, $featured_image, $gallery_id) {
 
    if ($result == true) {
       redirect("/editgallery?id=$gallery_id");
+   } else {
+      redirect('/');
    }
 }

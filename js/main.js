@@ -16,3 +16,16 @@ $(function() {
 
    // GAGAN'S CODE
 });
+
+$(window).on('load', function() {
+   function adjustHeights() {
+      var contentHeight = $('#footer').outerHeight() + $('#main').outerHeight();
+      var fillerHeight = $('#header').outerHeight() > contentHeight ? $('#header').outerHeight() - contentHeight : 0;
+      $('#filler').height(fillerHeight);
+      $('#fake-header').height(contentHeight + fillerHeight);
+   }
+
+   adjustHeights();
+
+   $(window).resize(adjustHeights);
+});

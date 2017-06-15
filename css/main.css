@@ -273,6 +273,10 @@ a {
  * Edit Galleries
  */
 
+#add-gallery {
+   padding-bottom: 30px;
+}
+
 .edit-heading {
    font-size: 35px;
    padding: 30px 0;
