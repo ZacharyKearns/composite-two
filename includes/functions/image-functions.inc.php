@@ -102,71 +102,37 @@ function resize_image($image_filepath, $destination_folder, $dimensions) {
    return $image_filepath;
 }
 
-
-
 function update_user_image($db, $email, $old_image) {
    $errors = array();
+
    // check if there is a filename submitted
    if (strlen($_FILES['user-image']['name']) > 0) {
-
       $temp_location = $_FILES['user-image']['tmp_name'];
 
       if (
          $_FILES['user-image']['size'] > MAX_USER_IMAGE_FILE_SIZE ||
          $_FILES['user-image']['error'] == UPLOAD_ERR_INI_SIZE
       ) {
-         // file is too big
-         $maxSize = round(MAX_USER_IMAGE_FILE_SIZE / 1024);
-         $errors['size'] = "<p class=\"error\">
-                               The file uploaded is too large,
-                               please upload an image smaller
-                               than $maxSize KB.
-                            </p>";
+         $errors['size'] = max_size_error(MAX_USER_IMAGE_FILE_SIZE);
       }
 
       $info = getimagesize($temp_location);
       if (!$info || strpos(ALLOWED_FILE_TYPES, $info['mime']) === false) {
          // file is either corrupted or not the correct type of file
-         $errors['type'] = '<p class="error">
-                               The file is either corrupted or not one of the
-                               allowed types (JPEG, GIF, or PNG)
-                            </p>';
+         $error = '<p class="error">
+                      The file is either corrupted or not one of the
+                      allowed types (JPEG, GIF, or PNG)
+                   </p>';
       }
 
       if (count($errors) == 0) {
-         if (RANDOMIZE_FILENAME) {
-            // unique hash for the filename
-            $hash = sha1(microtime());
-            // get the original extension
-            $extension = explode('.', $_FILES['user-image']['name']);
-            $extension = array_pop($extension);
-            // combine it all together
-            $final_location = USER_IMAGE_FOLDER . "{$hash}.{$extension}";
-         } else {
-            $final_location = USER_IMAGE_FOLDER . $_FILES['user-image']['name'];
-         }
-
+         $final_location = create_final_location($_FILES['user-image']['name'], USER_IMAGE_FOLDER);
 
          if (move_uploaded_file($temp_location, $final_location)) {
             // file was moved OK
-
-            resize_image(
-               $final_location,
-               USER_IMAGE_FOLDER_LARGE,
-               320
-            );
-
-            resize_image(
-               $final_location,
-               USER_IMAGE_FOLDER_MEDIUM,
-               160
-            );
-
-            resize_image(
-               $final_location,
-               USER_IMAGE_FOLDER_SMALL,
-               40
-            );
+            resize_image($final_location, USER_IMAGE_FOLDER_LARGE, 320);
+            resize_image($final_location, USER_IMAGE_FOLDER_MEDIUM, 160);
+            resize_image($final_location, USER_IMAGE_FOLDER_SMALL, 40);
 
             // insert into the database
 
@@ -240,55 +206,29 @@ function add_gallery_image($db, $gallery_id, $image_name) {
          $_FILES['gallery-image']['size'] > MAX_FILE_SIZE ||
          $_FILES['gallery-image']['error'] == UPLOAD_ERR_INI_SIZE
       ) {
-         // file is too big
-         $maxSize = round(MAX_FILE_SIZE / 1024);
-         $errors['size'] = "<p class=\"error\">
-                               The file uploaded is too large,
-                               please upload an image smaller
-                               than $maxSize KB.
-                            </p>";
+         $errors['size'] = max_size_error(MAX_FILE_SIZE);
       }
 
       $info = getimagesize($temp_location);
       if (!$info || strpos(ALLOWED_FILE_TYPES, $info['mime']) === false) {
          // file is either corrupted or not the correct type of file
-         $errors['type'] = '<p class="error">
-                               The file is either corrupted or not one of the
-                               allowed types (JPEG, GIF, or PNG)
-                            </p>';
+         $error = '<p class="error">
+                      The file is either corrupted or not one of the
+                      allowed types (JPEG, GIF, or PNG)
+                   </p>';
       }
 
       if (count($errors) == 0) {
-         if (RANDOMIZE_FILENAME) {
-            // unique hash for the filename
-            $hash = sha1(microtime());
-            // get the original extension
-            $extension = explode('.', $_FILES['gallery-image']['name']);
-            $extension = array_pop($extension);
-            // combine it all together
-            $final_location = "{$user_folder}{$hash}.{$extension}";
-         } else {
-            $final_location = $user_folder . $_FILES['gallery-image']['name'];
-         }
+         $final_location = create_final_location($_FILES['gallery-image']['name'], $user_folder);
 
 
          if (move_uploaded_file($temp_location, $final_location)) {
             // file was moved OK
-
             $user_folder_large = $user_folder . "large/";
             $user_folder_thumb = $user_folder . "thumb/";
 
-            resize_image(
-               $final_location,
-               $user_folder_large,
-               600
-            );
-
-            resize_image(
-               $final_location,
-               $user_folder_thumb,
-               100
-            );
+            resize_image($final_location, $user_folder_large, 600);
+            resize_image($final_location,$user_folder_thumb,100);
 
             // insert into the database
 

@@ -35,3 +35,29 @@ function get_gallery_with_images($db, $gallery) {
 
    return $gallery;
 }
+
+function max_size_error($max_size) {
+   // file is too big
+   $max_size_rounded = round($max_size / 1024);
+   $error = "<p class=\"error\">
+                         The file uploaded is too large,
+                         please upload an image smaller
+                         than $max_size_rounded KB.
+                      </p>";
+   return $error;
+}
+
+function create_final_location($filename, $folder_path) {
+   if (RANDOMIZE_FILENAME) {
+      // unique hash for the filename
+      $hash = sha1(microtime());
+      // get the original extension
+      $extension = explode('.', $filename);
+      $extension = array_pop($extension);
+      // combine it all together
+      $final_location = $folder_path . "{$hash}.{$extension}";
+   } else {
+      $final_location = $folder_path . $filename;
+   }
+   return $final_location;
+}

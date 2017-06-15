@@ -41,9 +41,6 @@ function add_gallery(
    $featured_image
 ) {
    $errors = array();
-   $gallery_name = sanitize($db, $gallery_name);
-   $description = sanitize($db, $description);
-   $featured_image = sanitize($db, $featured_image);
 
    if (strlen(trim($gallery_name)) < 1) {
       $errors['gallery_name'] = '<p class="error">
@@ -63,45 +60,92 @@ function add_gallery(
                                    </p>';
    }
 
-   if (count($errors) == 0) {
-      $email = $_SESSION['email'];
+   $user_email = $_SESSION['email'];
+   $user_folder = USER_GALLERIES_FOLDER . "$user_email/";
 
-      $query = "INSERT INTO photopro_galleries(
-                   name,
-                   description,
-                   featured_image,
-                   user_email
-                )
-                VALUES(
-                   '$gallery_name',
-                   '$description',
-                   '$featured_image',
-                   '$email'
-                )";
+   // check if there is a filename submitted
+   if (strlen($_FILES['gallery-image']['name']) > 0) {
 
-      // send query to the db server and wait for result
-      $result = mysqli_query($db, $query) or die(mysqli_error($db));
+      $temp_location = $_FILES['gallery-image']['tmp_name'];
 
-      if ($result == true) {
-         $galleries = get_galleries($db, $_SESSION['email']);
-         $galleries = mysqli_fetch_all($galleries, MYSQLI_ASSOC);
-         $index = count($galleries) - 1;
-         $gallery = $galleries[$index];
+      if (
+         $_FILES['gallery-image']['size'] > MAX_FILE_SIZE ||
+         $_FILES['gallery-image']['error'] == UPLOAD_ERR_INI_SIZE
+      ) {
+         $errors['size'] = max_size_error(MAX_FILE_SIZE);
+      }
 
-         $errors['image_upload'] = add_gallery_image(
-            $db,
-            $gallery['id'],
-            $gallery['featured_image']
-         );
+      $info = getimagesize($temp_location);
+      if (!$info || strpos(ALLOWED_FILE_TYPES, $info['mime']) === false) {
+         // file is either corrupted or not the correct type of file
+         $error = '<p class="error">
+                      The file is either corrupted or not one of the
+                      allowed types (JPEG, GIF, or PNG)
+                   </p>';
+      }
 
-         if (count($errors) == 0) {
-            redirect("/editgalleries?email={$gallery['user_email']}");
+      if (count($errors) == 0) {
+         $gallery_name = sanitize($db, $gallery_name);
+         $description = sanitize($db, $description);
+         $featured_image = sanitize($db, $featured_image);
+         $final_location = create_final_location($_FILES['gallery-image']['name'], $user_folder);
+
+
+         if (move_uploaded_file($temp_location, $final_location)) {
+            // file was moved OK
+            $user_folder_large = $user_folder . "large/";
+            $user_folder_thumb = $user_folder . "thumb/";
+
+            resize_image($final_location, $user_folder_large, 600);
+            resize_image($final_location,$user_folder_thumb,100);
+
+            // insert into the database
+
+            // get the filename on its own
+            $filename = explode('/', $final_location);
+            $filename = array_pop($filename);
+
+            $add_gallery_query = "INSERT INTO photopro_galleries(
+                         name,
+                         description,
+                         featured_image,
+                         user_email
+                      )
+                      VALUES(
+                         '$gallery_name',
+                         '$description',
+                         '$filename',
+                         '$user_email'
+                      )";
+
+            $add_gallery_result = mysqli_query($db, $add_gallery_query) or die(mysqli_error($db));
+
+            $galleries = get_galleries($db, $_SESSION['email']);
+            $galleries = mysqli_fetch_all($galleries, MYSQLI_ASSOC);
+            $gallery = $galleries[0];
+            $id = $gallery['id'];
+
+            $add_image_query = "INSERT INTO photopro_images(name, filename, gallery_id)
+                      VALUES('$featured_image', '$filename', $id)";
+
+            $add_image_result = mysqli_query($db, $add_image_query) or die(mysqli_error($db));
+
+            if ($add_image_result && $add_gallery_result) {
+               unlink($user_folder . $filename);
+               redirect("/editgallery?id=$id");
+            }
          } else {
-            return $errors;
+            // could not move file
+            $errors['file'] = '<p class="error">
+                                  Upload failed. Please try again.
+                               </p>';
          }
       }
+   } else {
+      $errors['file'] = '<p class="error">
+                            Please select an image to upload.
+                         </p>';
    }
-
    return $errors;
 }
 
