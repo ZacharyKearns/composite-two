@@ -1,6 +1,13 @@
 <?php
+/**
+ * Retrieve list of users from the database.
+ *
+ * @param link $db The link resource for the database connection
+ *
+ * @return array Results of the database call
+ */
 function get_users($db) {
-   // set up query to fetch book list
+   // set up query to fetch user list
    $query = "SELECT
                 id,
                 firstname,
@@ -21,8 +28,16 @@ function get_users($db) {
    return $result;
 }
 
+/**
+ * Retrieve user from the database.
+ *
+ * @param link $db The link resource for the database connection
+ * @param int $user_id Id of the user being retrieved from the database
+ *
+ * @return array Results of the database call
+ */
 function get_user($db, $email) {
-   // set up query to fetch book list
+   // set up query to fetch user
    $query = "SELECT
                 email,
                 email_hash,
@@ -44,6 +59,20 @@ function get_user($db, $email) {
    return $result;
 }
 
+/**
+ * Updates user information.
+ *
+ * @param link $db The link resource for the database connection
+ * @param string $email User's email
+ * @param string $firstname User's firstname
+ * @param string $lastname User's lastname
+ * @param string $about User's about section
+ * @param string $locality User's locality
+ * @param string $state User's state
+ * @param string $country User's country
+ *
+ * @return array Associative array of error messages generated
+ */
 function update_user(
    $db,
    $email,
@@ -56,18 +85,21 @@ function update_user(
 ) {
    $errors = array();
 
+   // Firstname field is empty
    if (strlen(trim($firstname)) < 1) {
       $errors['firstname'] = '<p class="error">
                                  Please enter a first name.
                               </p>';
    }
 
+   // Lastname field is empty
    if (strlen(trim($lastname)) < 1) {
       $errors['lastname'] = '<p class="error">
                                  Please enter a last name.
                               </p>';
    }
 
+   // Location is incomplete
    if (
       strlen(trim($locality)) < 1 ||
       strlen(trim($state)) < 1 ||
@@ -78,18 +110,6 @@ function update_user(
                               </p>';
    }
 
-   // if (filter_var($image_url, FILTER_VALIDATE_URL) === FALSE) {
-   //    $errors['image_url'] = '<p class="error">
-   //                               Please enter a valid image url.
-   //                            </p>';
-   // }
-
-   // if (intval($id) < 1) {
-   //    $errors['id'] = '<p class="error">
-   //                        Book Id is not valid.
-   //                     </p>';
-   // }
-
    if (count($errors) == 0) {
       $firstname = sanitize($db, $firstname);
       $lastname = sanitize($db, $lastname);
@@ -99,6 +119,7 @@ function update_user(
       $about = sanitize($db, $about);
       $email = sanitize($db, $email);
 
+      // query to update user information
       $query = "UPDATE photopro_users
                 SET
                  firstname = '$firstname',
@@ -114,13 +135,17 @@ function update_user(
       $result = mysqli_query($db, $query) or die(mysqli_error($db));
 
       if ($result == true) {
+         // updates users session to reflect changes
          $_SESSION['firstname'] = $firstname;
+         // folder paths for resized gallery images
          $large_folder_path = "images/user-galleries/$email/large/";
          $thumb_folder_path = "images/user-galleries/$email/thumb/";
+         // create folders if they do not exist yet
          if (!file_exists($large_folder_path) && !file_exists($thumb_folder_path)) {
             mkdir($large_folder_path, 0777, true);
             mkdir($thumb_folder_path, 0777, true);
          }
+         // redirect back to the edit page
          redirect("/editprofile?email=$email");
       }
    }
@@ -128,8 +153,16 @@ function update_user(
    return $errors;
 }
 
+/**
+ * Make sure email matches logged in users email.
+ *
+ * @param link $db The link resource for the database connection
+ * @param string $email Email being passed to router
+ *
+ * @return bool Returns false
+ */
 function check_user_email($db, $email) {
-   // set up query to fetch book list
+   // set up query to fetch email
    $query = "SELECT
                 email
              FROM photopro_users
@@ -139,8 +172,10 @@ function check_user_email($db, $email) {
    // send query to the db server and wait for result
    $result = mysqli_query($db, $query) or die(mysqli_error($db));
 
+   // array of user information
    $row = mysqli_fetch_assoc($result);
 
+   // redirect to home if emails do not match
    if ($row['email'] != $_SESSION['email']) {
       redirect('/');
    }

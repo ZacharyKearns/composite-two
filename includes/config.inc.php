@@ -5,16 +5,16 @@
  */
 
 // Development
-define('DB_HOST',     'localhost');
-define('DB_USER',     'root');
-define('DB_PASSWORD', 'root');
-define('DB_NAME',     'composite_two');
+// define('DB_HOST',     'localhost');
+// define('DB_USER',     'root');
+// define('DB_PASSWORD', 'root');
+// define('DB_NAME',     'composite_two');
 
 // Production
-// define('DB_HOST',     'localhost');
-// define('DB_USER',     'zachary8_zach');
-// define('DB_PASSWORD', 'password111');
-// define('DB_NAME',     'zachary8_wddm');
+define('DB_HOST',     'localhost');
+define('DB_USER',     'zachary8_zach');
+define('DB_PASSWORD', 'password111');
+define('DB_NAME',     'zachary8_composite_two');
 
 /**
  * Timezone Settings

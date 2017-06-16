@@ -4,7 +4,6 @@ switch($_GET['action']) {
       $result = get_users($db);
    break;
    case 'user':
-      check_login();
       if (isset($_GET['email'])) {
          $user = get_user($db, $_GET['email']);
          $galleries = get_galleries($db, $_GET['email']);
@@ -126,6 +125,18 @@ switch($_GET['action']) {
          delete_image(
             $db,
             $_GET['filename'],
+            $_GET['id']
+         );
+      } else {
+         redirect('/');
+      }
+   break;
+   case 'delete-gallery':
+      check_login();
+      if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+         check_user_gallery($db, $_GET['id']);
+         delete_gallery(
+            $db,
             $_GET['id']
          );
       } else {

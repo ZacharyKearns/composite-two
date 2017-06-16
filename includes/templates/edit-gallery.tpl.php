@@ -76,6 +76,12 @@
       <input type="file" name="gallery-image">
       <input type="submit" value="Add Image">
    </form>
-   <a class="edit-gallery-btn delete-gallery-btn" href="#">Delete Gallery</a>
+   <?php $delete_gallery_link = "/delete-gallery?id={$gallery['id']}"; ?>
+   <a
+   class="edit-gallery-btn delete-gallery-btn"
+   href="<?php echo $delete_gallery_link; ?>"
+   onclick="confirm('This will delete all the images in this gallery as well. Are You Sure')">
+      Delete Gallery
+   </a>
 </div>
 <?php include('includes/templates/footer.tpl.php'); ?>

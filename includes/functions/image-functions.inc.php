@@ -1,4 +1,13 @@
 <?php
+/**
+* Resizes image
+*
+* @param string $image_filepath Location of image to resize.
+* @param string $destination_folder Folder to save resized image.
+* @param int $dimensions Dimensions of resized image.
+*
+* @return array An associative array of error messages generated.
+*/
 function resize_image($image_filepath, $destination_folder, $dimensions) {
    $info = getimagesize($image_filepath);
    // get the type of image it is
@@ -102,6 +111,15 @@ function resize_image($image_filepath, $destination_folder, $dimensions) {
    return $image_filepath;
 }
 
+/**
+ * Updates the users profile image.
+ *
+ * @param link $db The link resource for the database connection
+ * @param string $email Email of the user
+ * @param string $old_image Filename of the old profile image
+ *
+ * @return array Associative array of error messages generated
+ */
 function update_user_image($db, $email, $old_image) {
    $errors = array();
 
@@ -143,20 +161,27 @@ function update_user_image($db, $email, $old_image) {
             // gather other details
             $email = sanitize($db, $_POST['email']);
 
+            // query to update the users profile image
             $query = "UPDATE photopro_users
                       SET user_image = '$filename'
                       WHERE email = '$email'";
 
+            // send query and wait for result
             $result = mysqli_query($db, $query) or die(mysqli_error($db));
 
             if ($result == true) {
+               // Update the users session to show new image
                $_SESSION['user_image'] = $filename;
+               // Delete the old image file
                unlink(USER_IMAGE_FOLDER . $filename);
                if ($old_image != 'empty.png') {
+                  // Delete all the old versions of the image
+                  // if it is not the default image
                   unlink(USER_IMAGE_FOLDER_LARGE . $old_image);
                   unlink(USER_IMAGE_FOLDER_MEDIUM . $old_image);
                   unlink(USER_IMAGE_FOLDER_SMALL . $old_image);
                }
+               // redirect back to the edit page
                redirect("/editprofile?email=$email");
             }
          } else {
@@ -174,19 +199,26 @@ function update_user_image($db, $email, $old_image) {
    return $errors;
 }
 
-// END UPDATE USER IMAGE
-
-// ADD GALLERY IMAGE
-
+/**
+ * Add a new image to the gallery.
+ *
+ * @param link $db The link resource for the database connection
+ * @param int $gallery_id The ID of the gallery to add the image too
+ * @param string $image_name The name of the new image
+ *
+ * @return array Associative array of error messages generated
+ */
 function add_gallery_image($db, $gallery_id, $image_name) {
    $errors = array();
 
+   // Image name field is empty
    if (strlen(trim($image_name)) < 1) {
       $errors['image_name'] = '<p class="error">
                                   Please enter an image name.
                                </p>';
    }
 
+   // Gallery ID is not a number
    if (intval($gallery_id) < 1) {
       $errors['add_image_gallery_id'] = '<p class="error">
                                             Gallery Id is not valid.
@@ -194,6 +226,7 @@ function add_gallery_image($db, $gallery_id, $image_name) {
    }
 
    $user_email = sanitize($db, $_POST['email']);
+   // Folder path to save new image in
    $user_folder = USER_GALLERIES_FOLDER . "$user_email/";
    $image_name = sanitize($db, $image_name);
 
@@ -221,9 +254,10 @@ function add_gallery_image($db, $gallery_id, $image_name) {
       if (count($errors) == 0) {
          $final_location = create_final_location($_FILES['gallery-image']['name'], $user_folder);
 
-
          if (move_uploaded_file($temp_location, $final_location)) {
             // file was moved OK
+
+            // folders paths for resized images
             $user_folder_large = $user_folder . "large/";
             $user_folder_thumb = $user_folder . "thumb/";
 
@@ -236,13 +270,17 @@ function add_gallery_image($db, $gallery_id, $image_name) {
             $filename = explode('/', $final_location);
             $filename = array_pop($filename);
 
+            // query to add new image to the database
             $query = "INSERT INTO photopro_images(name, filename, gallery_id)
                       VALUES('$image_name', '$filename', $gallery_id)";
 
+            // send query and wait for results
             $result = mysqli_query($db, $query) or die(mysqli_error($db));
 
             if ($result == true) {
+               // delete original file
                unlink($user_folder . $filename);
+               // redirect to edit page
                redirect("/editgallery?id=$gallery_id");
             }
          } else {
@@ -260,8 +298,16 @@ function add_gallery_image($db, $gallery_id, $image_name) {
    return $errors;
 }
 
+/**
+ * Get a mysql object of gallery images.
+ *
+ * @param link $db The link resource for the database connection
+ * @param int $id ID of the images gallery
+ *
+ * @return array $result Results of the database call
+ */
 function get_images($db, $id) {
-   // set up query to fetch galleries
+   // set up query to fetch images
    $query = "SELECT
                 id,
                 name,
@@ -276,9 +322,20 @@ function get_images($db, $id) {
    return $result;
 }
 
+/**
+ * Updates the name of an image.
+ *
+ * @param link $db The link resource for the database connection
+ * @param int $image_id The ID of the image
+ * @param string $image_name The new image name
+ * @param int $gallery_id The ID of the images gallery
+ *
+ * @return array Associative array of error messages generated
+ */
 function update_image_name($db, $image_id, $image_name, $gallery_id) {
    $errors = array();
 
+   // Image name field is empty
    if (strlen(trim($image_name)) < 1) {
       $errors['updated_image_name'] = '<p class="error">
                                           Image name cannot be empty.
@@ -289,30 +346,43 @@ function update_image_name($db, $image_id, $image_name, $gallery_id) {
       $image_id = sanitize($db, $image_id);
       $image_name = sanitize($db, $image_name);
 
+      // query to update the image name
       $query = "UPDATE photopro_images
                 SET name = '$image_name'
                 WHERE id = $image_id";
 
+      // send query and wait for result
       $result = mysqli_query($db, $query) or die(mysqli_error($db));
 
       if ($result == true) {
+         // redirect back to edit page
          redirect("/editgallery?id=$gallery_id");
       }
    }
    return $errors;
 }
 
+/**
+ * Deletes an image.
+ *
+ * @param link $db The link resource for the database connection
+ * @param string $filename Name of the file to be deleted
+ * @param int $gallery_id ID of the images gallery
+ */
 function delete_image($db, $filename, $gallery_id) {
    $filename = sanitize($db, $filename);
 
+   // query to delete the image
    $query = "DELETE FROM photopro_images WHERE filename = '$filename' LIMIT 1";
 
    // send query to the db server and wait for result
    $result = mysqli_query($db, $query) or die(mysqli_error($db));
 
    if ($result == true) {
+      // delete image from folders
       unlink(USER_GALLERIES_FOLDER . $_SESSION['email'] . "/large/$filename");
       unlink(USER_GALLERIES_FOLDER . $_SESSION['email'] . "/thumb/$filename");
+      // redirect back to the edit page
       redirect("/editgallery?id=$gallery_id");
    } else {
       redirect('/');
