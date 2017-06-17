@@ -14,7 +14,13 @@ $(function() {
       });
    });
 
-   // GAGAN'S CODE
+   $('.grid').imagesLoaded(function() {
+      $('.masonry-image').each(function() {
+         var height = $(this).height();
+         // match overlay height with image height
+         $(this).next().height(height);
+      });
+   });
 });
 
 $(window).on('load', function() {

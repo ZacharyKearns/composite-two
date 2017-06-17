@@ -2,9 +2,10 @@
    $page_title = 'Edit Gallery';
    include('includes/templates/header.tpl.php');
 ?>
-<h1 class="center">Edit <?php echo $gallery['name']; ?></h1>
-<div class="edit-container">
+<div class="edit-form-container">
+   <h1 class="form-heading">Edit <?php echo $gallery['name']; ?></h1>
    <?php echo $errors['gallery_id']; ?>
+   <!-- Form to update gallery information -->
    <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post">
       <input type="hidden" name="id" value="<?php echo $gallery['id']; ?>" />
 
@@ -20,6 +21,7 @@
       <input class="edit-gallery-btn" type="submit" value="Update Gallery Info">
    </form>
    <?php echo $errors['updated_image_name']; ?>
+   <!-- Output table of images -->
    <table class="edit-table">
       <thead>
          <th>Name</th>
@@ -37,7 +39,7 @@
                   <form class="update-name-form" action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post">
                      <input type="hidden" name="gallery_id" value="<?php echo $gallery['id']; ?>" />
                      <input type="hidden" name="image_id" value="<?php echo $image['id']; ?>" />
-                     <input type="text" name="updated_image_name" value="<?php echo $image['name']; ?>">
+                     <input class="image-name-input" type="text" name="updated_image_name" value="<?php echo $image['name']; ?>">
                      <input class="edit-gallery-btn update-name-btn" type="submit" value="Update Name">
                   </form>
                </td>
@@ -46,17 +48,20 @@
                   <?php if ($image['filename'] == $gallery['featured_image']): ?>
                      <span>Current</span>
                   <?php else:
+                     // link to change featured image
                      $set_featured_link = "/setfeatured?featured={$image['filename']}&id={$gallery['id']}"; ?>
                      <a href=<?php echo $set_featured_link; ?>>Set</a>
                   <?php endif ?>
                </td>
+               <!-- Link to delete image -->
                <?php $delete_link = "/delete-image?filename={$image['filename']}&id={$gallery['id']}"; ?>
                <td><a href=<?php echo $delete_link; ?>>Delete</a></td>
             </tr>
          <?php endforeach ?>
       </tbody>
    </table>
-   <p>Add An Image</p>
+   <h4 class="add-heading">Add An Image</h4>
+   <!-- Form to upload and image -->
    <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" enctype="multipart/form-data">
       <!-- hidden input to detect form submission -->
       <input type="hidden" name="submitted">
@@ -73,9 +78,15 @@
          echo $errors['size'];
          echo $errors['type'];
       ?>
-      <input type="file" name="gallery-image">
+      <div class="file-input-container">
+         <input type="file" name="gallery-image">
+         <span>
+            Browse Images &hellip;
+         </span>
+      </div>
       <input type="submit" value="Add Image">
    </form>
+   <!-- Button to delete gallery -->
    <?php $delete_gallery_link = "/delete-gallery?id={$gallery['id']}"; ?>
    <a
    class="edit-gallery-btn delete-gallery-btn"

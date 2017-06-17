@@ -137,6 +137,7 @@ function update_user(
       if ($result == true) {
          // updates users session to reflect changes
          $_SESSION['firstname'] = $firstname;
+         $_SESSION['active'] = true;
          // folder paths for resized gallery images
          $large_folder_path = "images/user-galleries/$email/large/";
          $thumb_folder_path = "images/user-galleries/$email/thumb/";
@@ -151,6 +152,56 @@ function update_user(
    }
 
    return $errors;
+}
+
+/**
+ * Deletes user.
+ *
+ * @param link $db The link resource for the database connection
+ * @param string $email User's email
+ */
+function delete_user($db, $email) {
+   $email = sanitize($db, $email);
+
+   // retrieve mysql object of galleries to be deleted
+   $get_galleries = get_galleries($db, $email);
+
+   // initialize galleries array
+   $galleries = [];
+   // create array of galleries
+   while ($row = $get_galleries->fetch_assoc()) {
+      $galleries[] = $row;
+   }
+
+   // loop through array and delete galleries
+   for ($i = 0; $i < count($galleries); $i++) {
+      delete_gallery($db, $galleries[$i]['id'], true);
+   }
+
+   // retrieve user information
+   $get_user = get_user($db, $email);
+   $user = mysqli_fetch_assoc($get_user);
+
+   // query to delete user information
+   $query = "DELETE FROM photopro_users WHERE email = '$email' LIMIT 1";
+
+   // send query and wait for result
+   $result = mysqli_query($db, $query) or die(mysqli_error($db));
+
+   if ($result) {
+      if ($user['user_image'] != 'empty.png') {
+         unlink(USER_IMAGE_FOLDER_SMALL . $user['user_image']);
+         unlink(USER_IMAGE_FOLDER_MEDIUM . $user['user_image']);
+         unlink(USER_IMAGE_FOLDER_LARGE . $user['user_image']);
+      }
+      $user_folder = USER_GALLERIES_FOLDER . $email;
+      if (file_exists($user_folder)) {
+         rmdir($user_folder . '/large/');
+         rmdir($user_folder . '/thumb/');
+         rmdir($user_folder);
+      }
+      logout();
+   }
 }
 
 /**

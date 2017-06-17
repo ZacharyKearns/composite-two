@@ -204,7 +204,7 @@ function add_gallery(
  * @param link $db The link resource for the database connection
  * @param int $id Id of the gallery to be deleted
  */
-function delete_gallery($db, $id) {
+function delete_gallery($db, $id, $delete_profile) {
    $id = sanitize($db, $id);
 
    // get mysql object of gallery
@@ -230,8 +230,12 @@ function delete_gallery($db, $id) {
          unlink(USER_GALLERIES_FOLDER . $_SESSION['email'] . "/large/{$images[$i]['filename']}");
          unlink(USER_GALLERIES_FOLDER . $_SESSION['email'] . "/thumb/{$images[$i]['filename']}");
       }
-      // redirect back to edit page
-      redirect("/editgalleries?email={$gallery['user_email']}");
+      if ($delete_profile) {
+         return false;
+      } else {
+         // redirect back to edit page
+         redirect("/editgalleries?email={$gallery['user_email']}");
+      }
    } else {
       redirect('/');
    }

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Oxygen:300|Raleway:600');
+@import url('https://fonts.googleapis.com/css?family=Oxygen:300,700|Raleway:600');
 
 /* CSS Reset */
 a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section,main{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
@@ -75,9 +75,9 @@ a {
 }
 
 .menu-img {
-   width: 40px;
    vertical-align: middle;
    margin-right: 5px;
+   max-height: 40px;
 }
 
 /**
@@ -104,11 +104,12 @@ a {
  * Users
  */
 
- #user-list {
-    max-width: 940px;
-    padding: 0 10px;
-    margin: 0 auto;
-
+.users-container,
+.galleries-container {
+   max-width: 960px;
+   margin: 0 auto;
+   overflow: hidden;
+   padding-bottom: 100px;
 }
 
 #users-heading {
@@ -120,12 +121,22 @@ a {
    font-family: Raleway, Arial, Helvetica, sans-serif;
 }
 
-.user {
+.user-profile,
+.gallery-item {
    padding: 20px 0;
-   border-bottom: 1px solid #ddd;
-   clear: both;
+   border: 3px solid #ddd;
    overflow: hidden;
    line-height: 1.6;
+   border-radius: 3px;
+   box-sizing: border-box;
+   width: 46%;
+   float: left;
+   margin: 1%;
+   padding: 1%;
+}
+
+.user-profile p {
+   padding: 5px 0;
 }
 
 .user-image {
@@ -160,7 +171,7 @@ a {
    color: #666;
 }
 
-.about {
+.about-p {
    color: #999;
 }
 
@@ -184,9 +195,16 @@ a {
  */
 
  /* Masonry.js styles */
+
+.grid-container {
+   max-width: 990px;
+   margin: 0 auto;
+}
+
  .grid {
+    padding: 0 20px 100px 20px;
+    clear: both;
     margin: 0 auto;
-    max-width: 990px;
  }
 
  .grid-item {
@@ -265,13 +283,19 @@ a {
 @media screen and (max-width: 1180px) {
    .gallery-heading,
    .gallery-subheading {
-      margin-left: 30px;
+      padding-left: 10px;
+      padding-right: 10px;
    }
 }
 
 /**
  * Edit Galleries
  */
+
+.edit-form-container {
+   max-width: 444px;
+   margin: 40px auto 0 auto;
+}
 
 #add-gallery {
    padding-bottom: 30px;
@@ -287,12 +311,6 @@ a {
    padding-bottom: 20px;
 }
 
-.edit-container {
-   max-width: 100%;
-   padding: 20px 10px;;
-
-}
-
 .edit-btn-container {
    margin-bottom: 15px;
 }
@@ -304,11 +322,17 @@ a {
    background: #53db43;
    display: inline-block;
    color: #FFF;
+   margin-right: 20px;
 }
 
 .delete-gallery-btn {
    background-color: #b5202c;
    margin: 40px 0;
+}
+
+.edit-gallery-heading {
+   font-size: 24px;
+   padding: 5px 0;
 }
 
 .edit-gallery-p {
@@ -365,35 +389,134 @@ a {
  * Temp Forms
  */
 
-h1 {
-   font-size: 60px;
-   text-align: center;
-}
-
-form {
-   width: 500px;
-   margin: 0 auto;
-}
-
-input, textarea, label, select, .error, p, button {
-   display: block;
-   margin-bottom: 10px;
-}
-
 .error {
    color: red;
 }
 
+.form-heading {
+   font-size: 60px;
+   text-align: center;
+   padding-bottom: 50px;
+}
+
+.add-heading {
+   font-size: 22px;
+   padding: 20px 0;
+}
+
+.current-location {
+   font-size: 22px;
+   padding-bottom: 20px;
+}
+
+.current-location-label {
+   font-weight: 700;
+}
+
+input, textarea, select, .error, button {
+   display: block;
+   margin-bottom: 20px;
+}
+
+.form-container {
+   max-width: 444px;
+   margin: 220px auto 0  auto;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
+   border: 2px solid #444;
+   padding: 20px;
+   border-radius: 10px;
+   font-size: 20px;
+   max-width: 400px;
+   outline: none;
+}
+
+input[type="submit"] {
+   padding: 10px 15px;
+   border: 2px solid #000;
+   border-radius: 5px;
+   background: #53db43;
+   display: inline-block;
+   color: #FFF;
+   font-size: 16px;
+}
+
 .profile-image {
-   width: 100px;
-   margin: 50px auto 0 auto;
+   width: 160px;
+   margin: 0 auto;
+   display: block;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-transition:background-color 5000s ease-in-out 0s;
+    transition: background-color 5000s ease-in-out 0s;
+    -webkit-text-fill-color: #999 !important;
+}
+
+.file-input-container span {
+   display: block;
+   background: #53db43;
+   color: #FFF;
+   padding: 10px 15px;
+   border-radius: 5px;
+   float: right;
+   cursor: pointer;
+   font-size: 16px;
+   line-height: 1;
+   border: 2px solid #000;
+}
+
+.file-input-container {
+   position: relative;
+   height: 50px;
+   width: 197px;
+   overflow: hidden;
+   cursor: pointer;
+}
+
+form input[type="file"] {
+   position: absolute;
+   top: 0;
+   left: 0;
+   z-index: 9999;
+   width: 100%;
+   height: 100%;
+   opacity: 0;
+   cursor: pointer;
+}
+
+.file-input-container span {
+   float: none;
+   position: absolute;
+   top: 0;
+   left: 0;
+   z-index: 0;
+   cursor: pointer;
+}
+
+input[type="text"].image-name-input {
+   padding: 5px 5px;
+   font-size: 12px;
+}
+
+label {
+   font-weight: 700;
+   font-size: 14px;
+   margin-bottom: 10px;
    display: block;
 }
 
 /**
  * Media Query > 640px
  */
-@media screen and (min-width: 640px) {
+@media screen and (min-width: 768px) {
    body {
       padding-top: 0;
       height: 100%;
@@ -459,11 +582,6 @@ input, textarea, label, select, .error, p, button {
    .social-icons {
       display: block;
    }
-
-   .edit-container {
-      max-width: 390px;
-      margin: 0 auto;
-   }
 }
 
 /**
@@ -501,8 +619,632 @@ input, textarea, label, select, .error, p, button {
  .jssora05r.jssora05rds { background-position: -70px -40px; opacity: .3; pointer-events: none; }
  /* jssor slider thumbnail navigator skin 01 css *//*.jssort01-99-66 .p            (normal).jssort01-99-66 .p:hover      (normal mouseover).jssort01-99-66 .p.pav        (active).jssort01-99-66 .p.pdn        (mousedown)*/.jssort01-99-66 .p {    position: absolute;    top: 0;    left: 0;    width: 99px;    height: 66px;}.jssort01-99-66 .t {    position: absolute;    top: 0;    left: 0;    width: 100%;    height: 100%;    border: none;}.jssort01-99-66 .w {    position: absolute;    top: 0px;    left: 0px;    width: 100%;    height: 100%;}.jssort01-99-66 .c {    position: absolute;    top: 0px;    left: 0px;    width: 95px;    height: 62px;    border: #000 2px solid;    box-sizing: content-box;    background: url('img/t01.png') -800px -800px no-repeat;    _background: none;}.jssort01-99-66 .pav .c {    top: 2px;    _top: 0px;    left: 2px;    _left: 0px;    width: 95px;    height: 62px;    border: #000 0px solid;    _border: #fff 2px solid;    background-position: 50% 50%;}.jssort01-99-66 .p:hover .c {    top: 0px;    left: 0px;    width: 97px;    height: 64px;    border: #fff 1px solid;    background-position: 50% 50%;}.jssort01-99-66 .p.pdn .c {    background-position: 50% 50%;    width: 95px;    height: 62px;    border: #000 2px solid;}* html .jssort01-99-66 .c, * html .jssort01-99-66 .pdn .c, * html .jssort01-99-66 .pav .c {    /* ie quirks mode adjust */    width /**/: 99px;    height /**/: 66px;}
 
+
+
+
+
 /***********
 ************
 ** GAGAN'S CODE
 ************
 ************/
+
+/**
+ * Isotope
+ */
+
+.isotope-item {
+	z-index: 2;
+}
+
+.isotope-hidden.isotope-item {
+	pointer-events: none;
+	z-index: 1;
+}
+
+.isotope, .isotope .isotope-item {
+	/* change duration value to whatever you like */
+	-webkit-transition-duration: 0.8s;
+	transition-duration: 0.8s;
+}
+
+.isotope {
+	-webkit-transition-property: height, width;
+	transition-property: height, width;
+}
+
+.isotope .isotope-item {
+	-webkit-transition-property: -webkit-transform, opacity;
+	-webkit-transition-property: opacity, -webkit-transform;
+	transition-property: opacity, -webkit-transform;
+	transition-property: transform, opacity;
+	transition-property: transform, opacity, -webkit-transform;
+}
+
+.portfolioContainer img {
+	margin: 2px;
+}
+
+div .portfolioContainer {
+   position: relative;
+}
+
+/**
+* Support Page
+*/
+
+/*set map's width and height*/
+#map iframe {
+   width: 100%;
+   height: 450px;
+}
+
+/*main container*/
+#mainContainer {
+   max-width: 1400px;
+   margin: 0 auto;
+   font-size: 14px;
+   padding: 5px;
+}
+
+/*show address info inline block
+and float them to the left and
+set the width*/
+#contactAddress {
+   display: inline-block;
+   float:left;
+   width: 35%;
+   margin-top: 80px;
+}
+
+/*set properties for h5*/
+#contactAddress h5 {
+   font-family: Raleway, serif;
+   font-weight: 600;
+   font-size: 20px;
+   margin-bottom: 50px;
+   text-transform: capitalize;
+}
+
+/*set margin between contact
+info, phn, email*/
+#contactAddress ul li {
+   margin-bottom: 30px;
+}
+/*set margin between
+contact info images and
+text*/
+#contactAddress ul li span {
+   vertical-align: super;
+   margin-left: 10px;
+}
+
+/*margin between map and
+body content*/
+#locationImg {
+   margin-bottom: 80px;
+   width: 225px;
+   height: 200px;
+}
+
+/*change the color of mob number*/
+#mobileNum {
+   color: #49ebc3;
+}
+
+/* set properties for all list
+items inside the FORM */
+#contactForm form li {
+   margin-bottom: 40px;
+   word-spacing: -5px;
+}
+
+/* send button */
+#contactForm input[type="submit"] {
+   text-transform: uppercase;
+   padding: 10px;
+   border-radius: 4px;
+   background-color: #49ebc3;
+   border: solid 1px #49ebc3;
+   color: #FFF;
+   cursor: pointer;
+   height: 50px;
+   width: 100px;
+}
+
+#contactForm {
+   float: left;
+   width: 60%;
+   display: inline-block;
+   padding-right: 2px;
+   margin-top: 80px;
+}
+
+/*set properties for h5*/
+#contactForm h5 {
+   font-family: Raleway, serif;
+   font-weight: 600;
+   font-size: 20px;
+   margin-bottom: 50px;
+   text-transform: capitalize;
+}
+
+#contactForm p {
+   line-height: 1.5;
+   margin-bottom: 20px;
+}
+
+/*setup for error messages*/
+#contactForm p.error {
+   word-spacing: normal;
+   background: #ffbaba;
+   color: #772020;
+   border: solid 1px #772020;
+   position: relative;
+   width: 50%;
+   margin-bottom: 10px;
+}
+
+/* little arrow for specific error messages */
+#contactForm p.error::after {
+   content: '';
+   position: absolute;
+   display: block;
+   border-top: solid 10px #772020;
+   border-left: solid 5px transparent;
+   border-right: solid 5px transparent;
+   height: 0;
+   width: 0;
+   bottom: -10px;
+   left: 40px;
+}
+
+/*target inner text of input and textarea*/
+#contactForm form input[type="text"],
+#contactForm form textarea {
+   font-family: inherit;
+   font-size: inherit;
+   font-weight: inherit;
+   line-height: inherit;
+   width: 95%;
+   border: solid 1px #FFF;
+   background-color: #FFF;
+   border-radius: 2px;
+   padding: 10px;
+}
+
+/* don't show the little arrow
+for general server errors */
+#contactForm p.error.server::after {
+   content: none;
+}
+
+/*design the email success message*/
+#contactForm h6 {
+   font-family: Raleway, serif;
+   text-align: center;
+   font-size: 24px;
+   color: #51ad7c;
+   font-weight: 600;
+   margin-bottom: 10px;
+   text-transform: capitalize;
+   margin-top: 50px;
+}
+
+#success {
+   font-size: 16px;
+   color: #51ad7c;
+}
+
+/*set margin for recapcha*/
+#recapcha {
+   margin-bottom: 20px;
+}
+
+/*goup*/
+#goUp {
+   position: fixed;
+   width: 50px;
+   height: 50px;
+   right: 10px;
+   bottom: 10px;
+   display: none;
+   z-index: 999;
+}
+
+/*to set the imageicon size*/
+.imageicon {
+   width: 30px;
+}
+
+/**
+ * About Page
+ */
+
+.about #aboutusMain {
+   margin-top:300px;
+   height: 100%;
+   padding-top: 92px;
+   padding-bottom: 92px;
+   width: 100%;
+   background-color: #f2f3f5;
+}
+
+.about {
+   background-image:url(../images/about-page/about_background.jpg);
+   background-size:cover;
+   background-position:left top;
+   background-attachment: fixed;
+   background-repeat: no-repeat;
+   height: 100vh;
+}
+
+.about #aboutUs,
+.about #aboutWork,
+.about #aboutTeam {
+   margin: 0 auto;
+   max-width: 1400px;
+   height: auto;
+   padding: 10px;
+}
+
+.about #aboutUs blockquote {
+   font-family:Raleway,sans-serif,serif;
+   font-weight: 600;
+   font-size: 20px;
+   line-height: 2;
+   padding-top: 40px;
+   text-transform: capitalize;
+   padding-bottom: 50px;
+   float: left;
+   width: 40%;
+}
+
+.about #aboutUs em{
+   font-weight: 700;
+   color: #49ebc3;
+   margin-left: 50px;
+}
+
+.about .aboutPara {
+   line-height: 2;
+   margin-bottom: 20px;
+   font-size: 16px;
+   float: right;
+   width: 50%;
+}
+
+.clear {
+   clear: both;
+}
+
+.about #aboutworkMain {
+   width: 100%;
+   height: 100%;
+   background-color: #FFF;
+}
+
+.portfolioContainer img {
+   margin: 2px;
+}
+
+div .portfolioContainer {
+   position: relative;
+}
+
+.about #aboutteamMain{
+   width: 100%;
+   height: 100%;
+   background-color: #f2f3f5;
+}
+
+.about #aboutTeam h5 {
+   font-family:Raleway,sans-serif,serif;
+   font-weight: 600;
+   font-size: 20px;
+   line-height: 2;
+   padding-top: 40px;
+   text-transform: capitalize;
+}
+
+.about #aboutTeam p {
+   width: 40%;
+   line-height: 1.5;
+}
+
+.about #aboutTeam img:hover{
+   opacity: 0.3;
+}
+
+.underline2 {
+   margin-left: 1px;
+   border-width: 2px;
+   width: 38%;
+   margin-top: 30px;
+   border-color: #000;
+}
+
+.teamImg {
+   width: 233px;
+   height: 337px;
+   margin-right: 12px;
+   margin-top: 72px;
+}
+
+.image {
+   opacity: 1;
+   -webkit-transition:.5s ease;
+   transition: .5s ease;
+   -webkit-backface-visibility:visible;
+   backface-visibility:visible;
+}
+
+/**
+ * Media Queries
+ */
+
+/**
+ * min 640 max 768
+ */
+@media only screen and (min-width:641px) and (max-width: 768px) {
+
+   /**
+   * Contact Page
+   */
+
+   /* set the width for main container */
+   #mainContainer {
+      width: 80%;
+      margin:30px;
+   }
+
+   /*set the width to 35% for
+   contact address*/
+   #contactAddress {
+      display: inline-block;
+      width: 100%;
+      padding-left: 2px;
+      margin-top: 80px;
+   }
+
+   /*set the width and height of
+   location img*/
+   #locationImg {
+      width:100%;
+      display: inline-block;
+   }
+
+   /*set the width of form
+   container*/
+   #contactFor{
+      width: 100%;
+   }
+
+   /*set the paragraph width*/
+   #contactForm p {
+      width: 90%;
+   }
+
+   /*set the width to 95%  */
+   #contactForm form input[type="text"],
+   #contactForm form textarea {
+      width: 95%;
+   }
+
+   /*clear both to stop the content
+   to flow*/
+   #contactForm {
+      clear:both;
+   }
+
+   /**
+    * About Page
+    */
+
+   .about #aboutUs,
+   .about #aboutWork,
+   .about #aboutTeam {
+      width:95%;
+      padding: 5px;
+   }
+
+   .about #aboutUs blockquote {
+      margin-right: 10px;
+      width: 40%;
+   }
+
+   .about .aboutPara {
+      width: 50%;
+   }
+
+   .portfolioContainer img {
+      margin: 5px;
+      padding-left:0px;
+   }
+
+   .about #aboutTeam p {
+      width: 100%;
+   }
+
+}
+
+/**
+ * min 320 max 640
+ */
+@media only screen and (min-width:320px) and (max-width: 640px) {
+
+   /**
+    * Contact Page
+    */
+
+   /*set the width for main container*/
+   #mainContainer {
+      width: 100%;
+      padding: 10px;
+   }
+
+   /* set the width to 100% for
+   contact address */
+   #contactAddress {
+      width: 90%;
+      height: auto;
+      padding-left: 10px;
+      display: inline-block;
+   }
+
+   /*give padding to h5*/
+   #contactAddress h5 {
+      padding-left: 3px;
+   }
+
+   /* set the img to fit in
+   container */
+   #locationImg {
+      width:100%;
+      display: inline-block;
+   }
+
+   /*set the width of form
+   container*/
+   #contactForm {
+      float: none;
+      width: 90%;
+      display: block;
+      padding-left: 10px;
+      margin-top: 100px;
+      clear: both;
+   }
+
+   /*set the width to 90%  */
+   #contactForm form input[type="text"],
+   #contactForm form textarea {
+      width: 90%;
+   }
+
+   /*put the margin from browser
+   screen*/
+   .imageicon {
+      margin-left:5px;
+   }
+
+   /**
+    * About Page
+    */
+
+   .about #aboutUs,
+   .about #aboutWork,
+   .about #aboutTeam {
+      max-width: 80%;
+      padding: 20px;
+   }
+
+   .about #aboutWork,
+   .about #aboutUs blockquote {
+      float: none;
+      width: 100%;
+   }
+
+   .about .aboutParah {
+      float: none;
+      width: 100%;
+   }
+
+   .about #aboutTeam h5{
+      text-align: center;
+   }
+
+   .about #aboutTeam p{
+      width: 100%;
+   }
+
+   .teamImg {
+      margin-left: 52px;
+   }
+
+}
+
+/**
+ *  Columns
+ */
+
+.col13 {
+	width: 29.33%;
+}
+
+.col23 {
+	width: 62.66%;
+}
+
+.col33 {
+
+}
+
+.col12 {
+	width: 46%;
+}
+
+.col14 {
+	width: 21%;
+}
+
+.col34 {
+	width: 71%;
+}
+
+.col15 {
+	width: 16%;
+}
+
+.col16 {
+	width: 12.66%;
+}
+
+.col13, .col23, .col33, .col12, .col14, .col34, .col15, .col16 {
+	margin: 1%;
+	padding: 1%;
+}
+
+/**
+ *  Reusable Classes
+ */
+
+.fl {
+	float: left;
+}
+
+.fr {
+	float: right;
+}
+
+.clear {
+	clear: both;
+}
+
+/**
+ *  Tablet
+ */
+
+@media screen and (min-width: 768px) and (max-width: 1280px) {
+	.col13, .col23, .col12, .col14, .col34, .col15, .col16 {
+		width: 46%;
+	}
+}
+
+/**
+ *  Phone
+ */
+
+@media screen and (max-width: 1130px) {
+	.col13, .col23, .col12, .col14, .col34, .col15, .col16 {
+		width: 96%;
+		display: block;
+		float: none !important;
+	}
+
+   .user-profile,
+   .gallery-item {
+      width: 96%;
+      display: block;
+      float: none !important;
+   }
+}

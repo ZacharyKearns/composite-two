@@ -62,7 +62,7 @@ function log_in($db, $email, $password) {
       $email = sanitize($db, $email);
 
       // query to select user information from the database
-      $query = "SELECT id, email, firstname, user_image, password_hash FROM photopro_users WHERE email = '$email' LIMIT 1";
+      $query = "SELECT id, email, firstname, user_image, password_hash, active FROM photopro_users WHERE email = '$email' LIMIT 1";
 
       // send query and wait for result
       $result = mysqli_query($db, $query) or die(mysqli_error($db));
@@ -80,6 +80,7 @@ function log_in($db, $email, $password) {
             $_SESSION['firstname'] = $row['firstname'];
             $_SESSION['email'] = $row['email'];
             $_SESSION['user_image'] = $row['user_image'];
+            $_SESSION['active'] = $row['active'];
             redirect("/user?email=$email");
          } else {
             $errors['password'] = '<p class="error">Incorrect password.</p>';
@@ -104,6 +105,8 @@ function logout() {
    $_SESSION['firstname'] = null;
    $_SESSION['email'] = null;
    $_SESSION['user_image'] = null;
+   $_SESSION['active'] = null;
+   unset($_SESSION['active']);
    unset($_SESSION['login_token']);
    unset($_SESSION['user_id']);
    unset($_SESSION['firstname']);

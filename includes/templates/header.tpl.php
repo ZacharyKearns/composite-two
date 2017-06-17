@@ -7,6 +7,8 @@
       <title><?php echo $page_title; ?> - Photo Pro</title>
       <!-- Main Stylesheet -->
       <link rel="stylesheet" href="css/main.css">
+      <!-- PRETTY PHOTO -->
+      <link rel="stylesheet" href="css/prettyPhoto.css">
 
       <!-- masonry.js -->
       <script src="js/masonry.js"></script>
@@ -19,7 +21,7 @@
          <script src="js/html5shiv.min.js"></script>
       <![endif]-->
 </head>
-<body>
+<body class="<?php echo $_GET['action']; ?>">
    <div id="fake-header"></div>
    <header id="header">
       <a href="index.php"><img src="images/misc/logo.svg" alt="logo for header" id="logo"></a>
@@ -27,7 +29,6 @@
          <img src="images/misc/close-menu.svg" alt="close button" id="close-menu">
       <nav id="menu">
          <ul>
-
             <li>
                <a class="menu-item" href="/home">HOME</a>
             </li>
@@ -41,9 +42,11 @@
                <li>
                   <a class="menu-item" href="/editprofile?email=<?php echo $_SESSION['email']; ?>">EDIT PROFILE</a>
                </li>
-               <li>
-                  <a class="menu-item" href="/editgalleries?email=<?php echo $_SESSION['email']; ?>">EDIT GALLERIES</a>
-               </li>
+               <?php if ($_SESSION['active']): ?>
+                  <li>
+                     <a class="menu-item" href="/editgalleries?email=<?php echo $_SESSION['email']; ?>">EDIT GALLERIES</a>
+                  </li>
+               <?php endif ?>
                <li>
                   <a class="menu-item" href="/logout">LOGOUT</a>
                </li>

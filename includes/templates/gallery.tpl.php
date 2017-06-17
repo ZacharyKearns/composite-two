@@ -1,5 +1,7 @@
 <?php
    $page_title = 'Gallery';
+
+   // redirect if data is not there
    if (
       mysqli_num_rows($user) == 0 ||
       mysqli_num_rows($gallery) == 0 ||
@@ -8,11 +10,17 @@
       redirect('/');
    }
 
+   // array with user information
    $user_row = mysqli_fetch_assoc($user);
+
+   // redirect if users account is not active
    if (!$user_row['active']) {
       redirect('/');
    }
+
+   // array with gallery information
    $gallery_row = mysqli_fetch_assoc($gallery);
+
    $email = $user_row['email'];
    include('includes/templates/header.tpl.php');
 ?>
@@ -24,14 +32,14 @@
       <h2 class="gallery-heading"><?php echo $gallery_row['name']; ?></h2>
       <h3 class="gallery-subheading"><?php echo $gallery_row['description']; ?></h3>
     </div>
-    <div id="jssor_1" style="position:relative;margin:0 auto;top:0px;left:0px;width:960px;height:480px;overflow:hidden;visibility:hidden;background-color:#24262e;">
+    <div id="jssor_1" style="position:relative;margin:0 auto 100px auto;top:0px;left:0px;width:960px;height:480px;overflow:hidden;visibility:hidden;background-color:#24262e;">
         <!-- Loading Screen -->
         <div data-u="loading" style="position:absolute;top:0px;left:0px;background:url('img/loading.gif') no-repeat 50% 50%;background-color:rgba(0, 0, 0, 0.7);"></div>
         <div data-u="slides" style="cursor:default;position:relative;top:0px;left:240px;width:720px;height:480px;overflow:hidden;">
            <?php
               while($image_row = mysqli_fetch_assoc($images)):
-              $src_large = "images/user-galleries/$email/large/{$image_row['filename']}";
-              $src_thumb = "images/user-galleries/$email/thumb/{$image_row['filename']}";
+                 $src_large = "images/user-galleries/$email/large/{$image_row['filename']}";
+                 $src_thumb = "images/user-galleries/$email/thumb/{$image_row['filename']}";
            ?>
                <div>
                    <img data-u="image" src=<?php echo $src_large; ?> />

@@ -4,21 +4,25 @@
    // values to the row variable
    if (mysqli_num_rows($user) > 0):
    $row = mysqli_fetch_assoc($user);
+
+   // redirect if the user account is not active
    if (!$row['active']) {
       redirect('/');
    }
+
    $name = $row['firstname'] . ' ' . $row['lastname'];
    $email = $row['email'];
    include('includes/templates/header.tpl.php');
 ?>
 <p class="error">
    <?php
+      // notify user to verify account
       $message = 'Please verify your account to start uploading photos.';
       if ($row['email_hash'] != 'verified') { echo $message; }
    ?>
 </p>
 <div id="user-list">
-   <div class="user" id="user-<?php echo $row['id']; ?>">
+   <div class="user-profile" id="user-<?php echo $row['id']; ?>">
       <img class="user-image user-image-large" src="images/user-images/large/<?php echo $row['user_image']; ?>" alt="<?php echo $name; ?>">
       <div class="user-info">
          <p class="name">
@@ -28,12 +32,12 @@
          </p>
          <?php $location = $row['locality'] . ', ' . $row['state'] . ', ' . $row['country']; ?>
          <p class="location"><?php echo $location; ?></p>
-         <p class="about"><?php echo $row['about']; ?></p>
+         <p class="about-p"><?php echo $row['about']; ?></p>
          <div class="email">
             <img src="images/misc/email.svg" alt="email">
             <span>
                <a href="mailto:<?php echo $email; ?>">
-                  <?php echo $email; ?>
+                  Email <?php echo $row['firstname']; ?>
                </a>
             </span>
          </div>
@@ -46,20 +50,22 @@
    <p class="center">No image galleries to show.</p>
 <?php else: ?>
    <!-- <a class="edit-books center" href="/home?edit=show">Edit Books</a> -->
-   <div class="grid" id="image-galleries">
-      <div class="grid-sizer"></div>
-      <?php while($row = mysqli_fetch_assoc($galleries)): ?>
-         <a href="/gallery?id=<?php echo $row['id']; ?>&amp;email=<?php echo $email; ?>">
-            <div class="grid-item" id="gallery-<?php echo $row['id']; ?>">
-               <?php $featured_image = "{$row['user_email']}/large/{$row['featured_image']}"; ?>
-               <img src="images/user-galleries/<?php echo $featured_image; ?>" alt="featured image">
-               <div class="overlay">
-                  <div class="gallery-name"><?php echo $row['name']; ?></div>
-                  <div class="gallery-description"><?php echo $row['description']; ?></div>
+   <div class="grid-container">
+      <div class="grid" id="image-galleries">
+         <div class="grid-sizer"></div>
+         <?php while($row = mysqli_fetch_assoc($galleries)): ?>
+            <a href="/gallery?id=<?php echo $row['id']; ?>&amp;email=<?php echo $email; ?>">
+               <div class="grid-item" id="gallery-<?php echo $row['id']; ?>">
+                  <?php $featured_image = "{$row['user_email']}/large/{$row['featured_image']}"; ?>
+                  <img class="masonry-image" src="images/user-galleries/<?php echo $featured_image; ?>" alt="featured image">
+                  <div class="overlay">
+                     <div class="gallery-name"><?php echo $row['name']; ?></div>
+                     <div class="gallery-description"><?php echo $row['description']; ?></div>
+                  </div>
                </div>
-            </div>
-         </a>
-      <?php endwhile ?>
+            </a>
+         <?php endwhile ?>
+      </div>
    </div>
 <?php endif ?>
 <?php else: ?>
